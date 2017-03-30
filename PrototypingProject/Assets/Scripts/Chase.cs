@@ -9,8 +9,8 @@ public class Chase : MonoBehaviour {
 	public Vector3 direction;
 	public AudioSource death;
 
-	private bool stuck = false;
-	private int health = 3;
+	public bool stuck = false;
+	//private int health = 3;
 
 	// Use this for initialization
 	void Start () {
@@ -24,13 +24,10 @@ public class Chase : MonoBehaviour {
 		if ((Vector3.Distance (player.transform.position, this.transform.position) < 10) && (stuck == false)) {
 
 			direction = player.transform.position - this.transform.position;
-			//direction.y = 0;
-
 			this.transform.rotation = Quaternion.Slerp (this.transform.rotation, Quaternion.LookRotation (direction), 0.1f);
-
 			if (Vector3.Distance (player.transform.position, this.transform.position) > .35) {
 				//this.transform.Translate (0, 0, 0.02f);
-				rb.AddForce(direction * 2); 
+				rb.AddForce(direction * 1); 
 			} 
 
 			else {
@@ -39,18 +36,20 @@ public class Chase : MonoBehaviour {
 		}
 	}
 
+	/*
 	IEnumerator OnCollisionEnter(Collision col){
 		
 		if (col.gameObject.tag == "MainCamera") {
-			
+			this.transform.parent =  GameObject.Find ("Camera (eye)").transform;
+			rb.isKinematic = true;
 		}
 
 		if ((col.gameObject.tag == "Sword") || (col.gameObject.tag == "Arrow")) {
 
-			stuck = true;
-			this.transform.parent =  GameObject.Find ("Camera (eye)").transform;
+			//stuck = true;
+			//this.transform.parent =  GameObject.Find ("Camera (eye)").transform;
 			rb.velocity = Vector3.zero;
-			rb.AddForce (direction * -12, ForceMode.VelocityChange); 
+			rb.AddForce (direction * -5, ForceMode.VelocityChange); 
 			health--;
 			if (health <= 0) {
 				death.Play ();
@@ -59,5 +58,18 @@ public class Chase : MonoBehaviour {
 			}
 		} 
 	}
+	*/
+
+	/*
+	void OnTriggerEnter(Collider col){
+
+		if (col.gameObject.tag == "MainCamera") {
+			this.transform.parent = GameObject.Find ("Camera (eye)").transform;
+			rb.isKinematic = true;
+			stuck = true;
+		}
+
+	}
+	*/
 
 }

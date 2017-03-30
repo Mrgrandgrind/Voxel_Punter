@@ -48,9 +48,12 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\Chase.cs" />
      <Compile Include="Assets\Scripts\EnemySpawner.cs" />
+     <Compile Include="Assets\Scripts\Force.cs" />
+     <Compile Include="Assets\Scripts\Grab_Item.cs" />
      <Compile Include="Assets\Scripts\PlatformDestroyer.cs" />
      <Compile Include="Assets\Scripts\PlatformGenerator.cs" />
      <Compile Include="Assets\Scripts\Projectile.cs" />
+     <Compile Include="Assets\Scripts\StickingEnemy_Manager.cs" />
      <Compile Include="Assets\Scripts\Turret.cs" />
      <Compile Include="Assets\SteamVR\Extras\SteamVR_GazeTracker.cs" />
      <Compile Include="Assets\SteamVR\Extras\SteamVR_LaserPointer.cs" />
