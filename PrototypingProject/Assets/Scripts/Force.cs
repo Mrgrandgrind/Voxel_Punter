@@ -1,8 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using VRTK;
 
 public class Force : MonoBehaviour {
+
+	public GameObject Hook;
 
 	private SteamVR_Controller.Device controller;
 	private LineRenderer lRender;
@@ -12,7 +15,6 @@ public class Force : MonoBehaviour {
 	private bool grabbed;
 	private bool Locked;
 	private float lerpTime;
-
 	private Vector3 LastHandPos;
 	private Vector3 ObjectPos;
 
@@ -34,14 +36,15 @@ public class Force : MonoBehaviour {
 				return;
 		}
 	
-		if (controller.GetPressDown (SteamVR_Controller.ButtonMask.Trigger)) { // Force Grab
+		 /// Controller events ///////////////////////////
+		if (controller.GetPressDown (SteamVR_Controller.ButtonMask.Grip)) { // Force Grab
 			grabbed = true;
 			ObjectPos = transform.position;
 		}
 
-		else if (controller.GetPress (SteamVR_Controller.ButtonMask.Trigger)) { // Force move
+		else if (controller.GetPress (SteamVR_Controller.ButtonMask.Grip)) { // Force move
 
-			if (ObjectPos == grabbableObject.transform.position) {
+			if (Hook.GetComponent<HookOverlaps>().HitGameObject == grabbableObject) {
 				Locked = true;
 				grabbable.Grab(true);
 			}
@@ -54,12 +57,14 @@ public class Force : MonoBehaviour {
 			DisplayLine (true, ObjectPos);
 		}
 
-		else if (controller.GetPressUp (SteamVR_Controller.ButtonMask.Trigger)) { // Release
+		else if (controller.GetPressUp (SteamVR_Controller.ButtonMask.Grip)) { // Release
 			DisplayLine (false, transform.position);
 			grabbed = false;
 			Locked = false;
 			grabbable.Grab(false);
 		}
+		/////////////////////////////////////////////////
+
 	}
 
 	void DisplayLine(bool display, Vector3 endpoint){
@@ -67,12 +72,14 @@ public class Force : MonoBehaviour {
 		positions [0] = transform.position;
 		positions [1] = endpoint;
 		lRender.SetPositions (positions);
+		Hook.transform.position = endpoint;
 	}
 
 
 	void OnTriggerEnter(Collider col){
 		if (col.gameObject.GetComponent<Grab_Item> () == true) {
 			grabbableObject = col.gameObject;
+			col.gameObject.GetComponent<VRTK_InteractableObject> ().ToggleHighlight (true);
 			if (!grabbed)
 			grabbable = grabbableObject.GetComponent<Grab_Item> ();
 		}
@@ -80,8 +87,10 @@ public class Force : MonoBehaviour {
 
 	void OnTriggerExit(Collider col){
 		if (col.gameObject.GetComponent<Grab_Item> () == true) {
-			if (!grabbed)
-			grabbable = null;
+			if (!grabbed) {
+				col.gameObject.GetComponent<VRTK_InteractableObject> ().ToggleHighlight (false);
+				grabbable = null;
+			}
 		}
 	}
 }

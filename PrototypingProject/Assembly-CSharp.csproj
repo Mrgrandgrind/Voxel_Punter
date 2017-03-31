@@ -50,6 +50,7 @@
      <Compile Include="Assets\Scripts\EnemySpawner.cs" />
      <Compile Include="Assets\Scripts\Force.cs" />
      <Compile Include="Assets\Scripts\Grab_Item.cs" />
+     <Compile Include="Assets\Scripts\HookOverlaps.cs" />
      <Compile Include="Assets\Scripts\PlatformDestroyer.cs" />
      <Compile Include="Assets\Scripts\PlatformGenerator.cs" />
      <Compile Include="Assets\Scripts\Projectile.cs" />
