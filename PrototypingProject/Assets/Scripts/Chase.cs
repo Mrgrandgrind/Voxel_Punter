@@ -26,12 +26,11 @@ public class Chase : MonoBehaviour {
 			direction = player.transform.position - this.transform.position;
 			this.transform.rotation = Quaternion.Slerp (this.transform.rotation, Quaternion.LookRotation (direction), 0.1f);
 			if (Vector3.Distance (player.transform.position, this.transform.position) > .35) {
-				//this.transform.Translate (0, 0, 0.02f);
 				rb.AddForce(direction * 1); 
 			} 
 
 			else {
-				Debug.LogError ("Attacking!");
+				//Debug.LogError ("Attacking!");
 			}
 		}
 	}

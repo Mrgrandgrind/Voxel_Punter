@@ -3,14 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Force : MonoBehaviour {
+
 	private SteamVR_Controller.Device controller;
 	private LineRenderer lRender;
 	private Vector3[] positions;
+	private GameObject grabbableObject;
 	private Grab_Item grabbable;
 	private bool grabbed;
-	private bool gripped;
+	private bool Locked;
+	private float lerpTime;
 
 	private Vector3 LastHandPos;
+	private Vector3 ObjectPos;
 
 	// Use this for initialization
 	void Start () {
@@ -18,66 +22,43 @@ public class Force : MonoBehaviour {
 		controller = SteamVR_Controller.Input ((int)trackedObj.index);
 		lRender = GetComponent<LineRenderer> ();
 		positions = new Vector3[2];
+		lerpTime = 0.05f;
+		Locked = false;
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
+
 		if (!grabbed) {
-			grabbable = RaycastForGrabbableObject();
 			if (!grabbable)
 				return;
 		}
-			
-		Vector3 CurrentHandPos = transform.position;
-		/*
-		if (controller.GetPressDown (SteamVR_Controller.ButtonMask.Grip)) {
-			grabbed = true;
-			grabbable.Grab (false);
-			DisplayLine (false, transform.position);
-		}
-
-		else if (controller.GetPressDown (SteamVR_Controller.ButtonMask.Grip)) {
-			grabbed = true;
-			grabbable.Grab (false);
-			DisplayLine (false, transform.position);
-		}
-
-		else if (controller.GetPressUp (SteamVR_Controller.ButtonMask.Grip)){
-			grabbed = false;
-		}
-		*/
-
+	
 		if (controller.GetPressDown (SteamVR_Controller.ButtonMask.Trigger)) { // Force Grab
 			grabbed = true;
-			grabbable.Grab(true);
-			LastHandPos = CurrentHandPos;
-			DisplayLine (false, transform.position);
-		} 
+			ObjectPos = transform.position;
+		}
 
 		else if (controller.GetPress (SteamVR_Controller.ButtonMask.Trigger)) { // Force move
-			grabbable.Move(CurrentHandPos, LastHandPos);
-		} 
+
+			if (ObjectPos == grabbableObject.transform.position) {
+				Locked = true;
+				grabbable.Grab(true);
+			}
+
+			if (Locked == true) {
+				grabbable.Move (transform.position);
+			}
+
+			ObjectPos = Vector3.MoveTowards (ObjectPos, grabbableObject.transform.position, Time.deltaTime / lerpTime);
+			DisplayLine (true, ObjectPos);
+		}
 
 		else if (controller.GetPressUp (SteamVR_Controller.ButtonMask.Trigger)) { // Release
-			grabbed = false;
-			grabbable.Grab(false);
-		}
-
-		LastHandPos = CurrentHandPos;
-	}
-
-	private Grab_Item RaycastForGrabbableObject(){
-		RaycastHit hit;
-		Ray r = new Ray (transform.position, transform.forward);
-		Debug.DrawRay (transform.position, transform.forward);
-
-		if (Physics.Raycast (r, out hit, Mathf.Infinity) && hit.collider.gameObject.GetComponent<Grab_Item>() != null) {
-			DisplayLine (true, hit.point);
-			return hit.collider.gameObject.GetComponent<Grab_Item>();
-		}
-		else {
 			DisplayLine (false, transform.position);
-			return null;
+			grabbed = false;
+			Locked = false;
+			grabbable.Grab(false);
 		}
 	}
 
@@ -86,5 +67,21 @@ public class Force : MonoBehaviour {
 		positions [0] = transform.position;
 		positions [1] = endpoint;
 		lRender.SetPositions (positions);
+	}
+
+
+	void OnTriggerEnter(Collider col){
+		if (col.gameObject.GetComponent<Grab_Item> () == true) {
+			grabbableObject = col.gameObject;
+			if (!grabbed)
+			grabbable = grabbableObject.GetComponent<Grab_Item> ();
+		}
+	}
+
+	void OnTriggerExit(Collider col){
+		if (col.gameObject.GetComponent<Grab_Item> () == true) {
+			if (!grabbed)
+			grabbable = null;
+		}
 	}
 }

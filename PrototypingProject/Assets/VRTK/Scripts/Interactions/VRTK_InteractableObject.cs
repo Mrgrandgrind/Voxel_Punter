@@ -437,6 +437,9 @@ namespace VRTK
 
                 if (interactableRigidbody)
                 {
+					if (GetComponent<Grab_Item> () == true) {
+						GetComponent<Grab_Item> ().Grab(false);
+					}
                     previousKinematicState = interactableRigidbody.isKinematic;
                 }
             }
