@@ -472,6 +472,7 @@ namespace VRTK
                 controllerCollisionDetector.transform.SetParent(transform);
                 controllerCollisionDetector.transform.localScale = transform.localScale;
                 controllerCollisionDetector.name = "VRTK_ControllerCollidersContainer";
+				controllerCollisionDetector.tag = "Controller";
                 destroyColliderOnDisable = true;
             }
             else

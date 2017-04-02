@@ -7,10 +7,12 @@ public class Chase : MonoBehaviour {
 	public GameObject player;
 	public Rigidbody rb;
 	public Vector3 direction;
-	public AudioSource death;
-
+	public int FaceLocation;
+	public Vector3 StickLocation;
 	public bool stuck = false;
 	//private int health = 3;
+	private float timeDelay = 0.1f;
+	public bool parented;
 
 	// Use this for initialization
 	void Start () {
@@ -20,19 +22,39 @@ public class Chase : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+		direction = player.transform.position - this.transform.position;
 
 		if ((Vector3.Distance (player.transform.position, this.transform.position) < 10) && (stuck == false)) {
-
 			direction = player.transform.position - this.transform.position;
 			this.transform.rotation = Quaternion.Slerp (this.transform.rotation, Quaternion.LookRotation (direction), 0.1f);
-			if (Vector3.Distance (player.transform.position, this.transform.position) > .35) {
+			if (Vector3.Distance (player.transform.position, this.transform.position) > 0.35f) {
 				rb.AddForce(direction * 1); 
-			} 
-
-			else {
-				//Debug.LogError ("Attacking!");
+			}
+		}else if (stuck == true) {
+			transform.rotation = Quaternion.Slerp (transform.rotation, Quaternion.LookRotation (direction), timeDelay);
+			if (parented == false) {
+				StartCoroutine (ParentToPlayer (timeDelay));
+				transform.position = Vector3.Lerp (transform.position, StickLocation, Time.deltaTime / timeDelay);
 			}
 		}
+	}
+
+	IEnumerator ParentToPlayer (float time){
+		yield return new WaitForSeconds (time*2);
+		transform.parent = player.transform;
+		parented = true;
+	}
+
+	void OnTriggerEnter (Collider col){
+		if (col.tag == "Controller" || col.tag == "Sword") {
+			GetComponent<Rigidbody> ().isKinematic = false;
+			GetComponent<Collider> ().isTrigger = false;
+			transform.parent = null;
+			GetComponent<Rigidbody> ().AddForce (0, 0, 200);
+			stuck = false;
+		}
+			//Destroy (gameObject);
+		//}
 	}
 
 	/*

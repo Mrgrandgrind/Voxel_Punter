@@ -12,11 +12,13 @@ public class Force : MonoBehaviour {
 	private Vector3[] positions;
 	private GameObject grabbableObject;
 	private Grab_Item grabbable;
-	private bool grabbed;
+	private bool grabbing;
 	private bool Locked;
 	private float lerpTime;
 	private Vector3 LastHandPos;
 	private Vector3 ObjectPos;
+
+	private List<GameObject> Overlaps = new List<GameObject>();
 
 	// Use this for initialization
 	void Start () {
@@ -30,15 +32,14 @@ public class Force : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-
-		if (!grabbed) {
+		if (!grabbing) {
 			if (!grabbable)
 				return;
 		}
 	
 		 /// Controller events ///////////////////////////
 		if (controller.GetPressDown (SteamVR_Controller.ButtonMask.Grip)) { // Force Grab
-			grabbed = true;
+			grabbing = true;
 			ObjectPos = transform.position;
 		}
 
@@ -59,12 +60,11 @@ public class Force : MonoBehaviour {
 
 		else if (controller.GetPressUp (SteamVR_Controller.ButtonMask.Grip)) { // Release
 			DisplayLine (false, transform.position);
-			grabbed = false;
+			grabbing = false;
 			Locked = false;
 			grabbable.Grab(false);
 		}
 		/////////////////////////////////////////////////
-
 	}
 
 	void DisplayLine(bool display, Vector3 endpoint){
@@ -78,16 +78,32 @@ public class Force : MonoBehaviour {
 
 	void OnTriggerEnter(Collider col){
 		if (col.gameObject.GetComponent<Grab_Item> () == true) {
-			grabbableObject = col.gameObject;
-			col.gameObject.GetComponent<VRTK_InteractableObject> ().ToggleHighlight (true);
-			if (!grabbed)
-			grabbable = grabbableObject.GetComponent<Grab_Item> ();
+			Overlaps.Add (col.gameObject); // adds overlap to list
+
+			int MinSlot = 0;
+			float min = Vector3.Distance (Overlaps[0].transform.position, transform.position);
+			float[] dist = new float[Overlaps.Count];
+
+			for (int i = 0; i < Overlaps.Count; i++){
+				dist[i] = Vector3.Distance (Overlaps[i].transform.position, transform.position);
+				if (dist [i] < min) {
+					min = dist [i];
+					MinSlot = i;
+				}
+			}
+
+			grabbableObject = Overlaps[Overlaps.Count-1]; // sets overlap to grabbale object
+			grabbableObject.GetComponent<VRTK_InteractableObject> ().ToggleHighlight (true); // Highlights Overlap
+	
+			if (!grabbing)
+				grabbable = grabbableObject.GetComponent<Grab_Item> ();
 		}
 	}
 
 	void OnTriggerExit(Collider col){
 		if (col.gameObject.GetComponent<Grab_Item> () == true) {
-			if (!grabbed) {
+			if (!grabbing) {
+				Overlaps.Remove(col.gameObject);
 				col.gameObject.GetComponent<VRTK_InteractableObject> ().ToggleHighlight (false);
 				grabbable = null;
 			}
