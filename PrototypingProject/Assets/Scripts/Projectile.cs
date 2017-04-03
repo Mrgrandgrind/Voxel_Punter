@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using VRTK;
 using VRTK.Examples;
 
 
@@ -9,11 +8,8 @@ public class Projectile : MonoBehaviour {
 
 	public Vector3 force;
 
-	private GameObject PlayerSword;
-
 	// Use this for initialization
 	void Start () {
-		PlayerSword = GameObject.Find ("Sword");
 		gameObject.GetComponent<Rigidbody> ().AddForce (force);
 	}
 	
@@ -26,7 +22,7 @@ public class Projectile : MonoBehaviour {
 
 		if (col.gameObject.tag == "Sword") {
 			float SwordForce;
-			SwordForce = PlayerSword.GetComponent<Sword> ().OverlapForce;
+			SwordForce = col.gameObject.GetComponent<Sword> ().OverlapForce;
 			gameObject.GetComponent<Rigidbody> ().AddForce (-force * (SwordForce/100));
 		}
 

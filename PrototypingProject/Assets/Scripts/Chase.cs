@@ -1,30 +1,35 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using VRTK.Examples;
 
 public class Chase : MonoBehaviour {
 
-	public GameObject player;
-	public Rigidbody rb;
-	public Vector3 direction;
+	private GameObject player;
+	private Rigidbody rb;
+	private Vector3 direction;
+	private float timeDelay = 0.05f;
+	private Renderer rend;
+	private Vector3 HitForce;
+
+	public bool stuck = false;
+	public bool parented;
 	public int FaceLocation;
 	public Vector3 StickLocation;
-	public bool stuck = false;
-	//private int health = 3;
-	private float timeDelay = 0.1f;
-	public bool parented;
 
 	// Use this for initialization
 	void Start () {
+		HitForce = new Vector3(0, 0, -200);
 		rb = GetComponent<Rigidbody>();
 		player = GameObject.Find ("Camera (eye)");
+		rend = GetComponent<Renderer> ();
 	}
 
 	// Update is called once per frame
 	void Update () {
 		direction = player.transform.position - this.transform.position;
-
-		if ((Vector3.Distance (player.transform.position, this.transform.position) < 10) && (stuck == false)) {
+		if ((Vector3.Distance (player.transform.position, this.transform.position) < 8) && (stuck == false)) {
+			rend.material.SetColor ("_Color", Color.blue);
 			direction = player.transform.position - this.transform.position;
 			this.transform.rotation = Quaternion.Slerp (this.transform.rotation, Quaternion.LookRotation (direction), 0.1f);
 			if (Vector3.Distance (player.transform.position, this.transform.position) > 0.35f) {
@@ -33,29 +38,45 @@ public class Chase : MonoBehaviour {
 		}else if (stuck == true) {
 			transform.rotation = Quaternion.Slerp (transform.rotation, Quaternion.LookRotation (direction), timeDelay);
 			if (parented == false) {
+				transform.parent = player.transform;
 				StartCoroutine (ParentToPlayer (timeDelay));
 				transform.position = Vector3.Lerp (transform.position, StickLocation, Time.deltaTime / timeDelay);
 			}
 		}
-	}
-
-	IEnumerator ParentToPlayer (float time){
-		yield return new WaitForSeconds (time*2);
-		transform.parent = player.transform;
-		parented = true;
+		else
+			rend.material.SetColor ("_Color", Color.white);
 	}
 
 	void OnTriggerEnter (Collider col){
 		if (col.tag == "Controller" || col.tag == "Sword") {
 			GetComponent<Rigidbody> ().isKinematic = false;
-			GetComponent<Collider> ().isTrigger = false;
+			//GetComponent<Collider> ().isTrigger = false;
 			transform.parent = null;
-			GetComponent<Rigidbody> ().AddForce (0, 0, 200);
 			stuck = false;
+
+			if (col.tag == "Controller")
+				GetComponent<Rigidbody> ().AddRelativeForce (0, 0, -200);
+
+			else if (col.tag == "Sword") {
+			float SwordForce;
+			SwordForce = col.gameObject.GetComponent<Sword> ().OverlapForce;
+				gameObject.GetComponent<Rigidbody> ().AddRelativeForce (HitForce * (SwordForce / 100));
+			StartCoroutine (Destroy ());
+			}
 		}
-			//Destroy (gameObject);
-		//}
 	}
+		
+
+	IEnumerator ParentToPlayer (float time){
+		yield return new WaitForSeconds (time*6);
+		parented = true;
+	}
+
+	IEnumerator Destroy(){
+		yield return new WaitForSeconds (1.0f);
+		Destroy (gameObject);
+	}
+
 
 	/*
 	IEnumerator OnCollisionEnter(Collision col){
