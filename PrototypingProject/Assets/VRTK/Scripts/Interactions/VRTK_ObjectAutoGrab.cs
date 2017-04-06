@@ -40,10 +40,14 @@ namespace VRTK
                 cloneGrabbedObject = true;
             }
 
-            StartCoroutine(AutoGrab());
+            //StartCoroutine(AutoGrab());
         }
 
-        private IEnumerator AutoGrab()
+		public void grabStart(){
+			StartCoroutine(AutoGrab());
+		}
+
+        public IEnumerator AutoGrab()
         {
             yield return new WaitForEndOfFrame();
 

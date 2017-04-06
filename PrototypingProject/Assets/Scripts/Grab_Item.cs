@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Grab_Item : MonoBehaviour {
 
-	//public bool GripOverride;
+	public bool inHand;
 
 	private Rigidbody rBody;
 	private float moveScale;
@@ -20,7 +20,13 @@ public class Grab_Item : MonoBehaviour {
 		rBody.isKinematic = ShouldGrab;
 	}
 
-	public void Move(Vector3 CurrentHandPosition){
-		rBody.position = Vector3.MoveTowards (rBody.position, CurrentHandPosition, Time.deltaTime / 0.2f);
+	public void Move(bool moving, Vector3 CurrentHandPosition){
+		if (moving == true) {
+			rBody.position = Vector3.MoveTowards (rBody.position, CurrentHandPosition, Time.deltaTime / 0.2f);
+			if (rBody.position == CurrentHandPosition)
+				inHand = true;
+		} else {
+			inHand = false;
+		}
 	}
 }
