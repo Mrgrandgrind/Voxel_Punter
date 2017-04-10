@@ -56,3 +56,7 @@ D:\Prototyping_GitHub\Voxel_Punter\PrototypingProject\Temp\bin\Debug\UnityEngine
 D:\Prototyping_GitHub\Voxel_Punter\PrototypingProject\Temp\bin\Debug\UnityEngine.HoloLens.xml
 D:\Prototyping_GitHub\Voxel_Punter\PrototypingProject\Temp\bin\Debug\UnityEngine.VR.xml
 D:\Prototyping_GitHub\Voxel_Punter\PrototypingProject\obj\Debug\Assembly-CSharp.pdb
+D:\Prototyping_GitHub\Voxel_Punter\PrototypingProject\Temp\bin\Debug\UnityEngine.Advertisements.dll
+D:\Prototyping_GitHub\Voxel_Punter\PrototypingProject\Temp\bin\Debug\UnityEngine.Purchasing.dll
+D:\Prototyping_GitHub\Voxel_Punter\PrototypingProject\Temp\bin\Debug\UnityEngine.Advertisements.xml
+D:\Prototyping_GitHub\Voxel_Punter\PrototypingProject\Temp\bin\Debug\UnityEngine.Purchasing.xml
