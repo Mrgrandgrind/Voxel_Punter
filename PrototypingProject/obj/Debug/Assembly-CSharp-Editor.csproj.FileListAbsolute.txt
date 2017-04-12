@@ -106,7 +106,3 @@ D:\Prototyping_GitHub\Voxel_Punter\PrototypingProject\Temp\bin\Debug\UnityEditor
 D:\Prototyping_GitHub\Voxel_Punter\PrototypingProject\obj\Debug\Assembly-CSharp-Editor.csprojResolveAssemblyReference.cache
 D:\Prototyping_GitHub\Voxel_Punter\PrototypingProject\obj\Debug\Assembly-CSharp-Editor.dll
 D:\Prototyping_GitHub\Voxel_Punter\PrototypingProject\obj\Debug\Assembly-CSharp-Editor.pdb
-D:\Prototyping_GitHub\Voxel_Punter\PrototypingProject\Temp\bin\Debug\UnityEngine.Advertisements.dll
-D:\Prototyping_GitHub\Voxel_Punter\PrototypingProject\Temp\bin\Debug\UnityEngine.Purchasing.dll
-D:\Prototyping_GitHub\Voxel_Punter\PrototypingProject\Temp\bin\Debug\UnityEngine.Advertisements.xml
-D:\Prototyping_GitHub\Voxel_Punter\PrototypingProject\Temp\bin\Debug\UnityEngine.Purchasing.xml

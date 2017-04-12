@@ -14,6 +14,10 @@ public class Force : MonoBehaviour {
 	public Color PointingColour;
 	public Color SelectColour;
 
+	[SerializeField]
+	public VRTK_BodyPhysics BodyPhysics;
+
+
 	private SteamVR_Controller.Device controller;
 	private LineRenderer lRender;
 	private Vector3[] positions;
@@ -22,6 +26,7 @@ public class Force : MonoBehaviour {
 	private Renderer HookRend;
 	private HookPull Hook_Pull;
 
+	private bool PullingPlayer;
 	private bool countdown;
 	private bool retracting;
 	private bool arrived;
@@ -51,9 +56,6 @@ public class Force : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		if (retracting)
-			PullPlayer ();
-
 		if (!grabbing){
 			if (!grabbable)
 				return;
@@ -62,7 +64,7 @@ public class Force : MonoBehaviour {
 		if (grabbing == true && Held == false) {
 			HookShot ();
 		} else if (controller.GetPressDown (SteamVR_Controller.ButtonMask.Grip) && Held == false) { // Force Grab
-			HookRend.material.SetColor ("_Color", Color.red);
+			
 		} else if (controller.GetPressUp (SteamVR_Controller.ButtonMask.Grip) && Held == false) {
 			HookRend.material.SetColor ("_Color", Color.green);
 			Hook.transform.parent = null;
@@ -84,6 +86,7 @@ public class Force : MonoBehaviour {
 			Locked = true;
 			if (grabbable.tag == "HookPull") {
 				PickupObject = false;
+				//BodyPhysics.enableBodyCollisions = false;
 				Hook_Pull.pull (vrtkController, grabbableObject.transform.parent.gameObject.transform);
 			} else {
 				PickupObject = true;
@@ -95,12 +98,14 @@ public class Force : MonoBehaviour {
 			if (PickupObject == true) {
 				grabbable.Move (true, transform.position);
 			} else {
+				PullingPlayer = true;
 				StartCoroutine (PullPlayer ());
 				if (retracting) {
+					//BodyPhysics.enableBodyCollisions = true;
 					HookTarget = this.gameObject;
 				}
-
 				if (arrived) {
+					PullingPlayer = false;
 					HookRend.material.SetColor ("_Color", Color.white);
 					Hook.transform.parent = this.gameObject.transform;
 					Hook.transform.localPosition = new Vector3 (0, 0, 0);
@@ -129,7 +134,7 @@ public class Force : MonoBehaviour {
 	IEnumerator PullPlayer(){
 		if (!countdown) {
 			countdown = true;
-			yield return new WaitForSecondsRealtime (1);
+			yield return new WaitForSecondsRealtime (0.5f);
 			retracting = true;
 			yield return new WaitForSecondsRealtime (0.25f);
 			arrived = true;
@@ -189,17 +194,19 @@ public class Force : MonoBehaviour {
 
 
 	void OnTriggerEnter(Collider col){
-		if ((col.gameObject.GetComponent<Grab_Item> () == true && !grabbing && !Held) || col.gameObject.tag == "HookPull") {
+		if ((col.gameObject.GetComponent<Grab_Item> ()) && !grabbing && !Held ) {
+			HookRend.material.SetColor ("_Color", Color.red);
 			Overlaps.Add (col.gameObject); // adds overlap to list
 			CurrentSelection();
 		}
 	}
 
 	void OnTriggerExit(Collider col){
-		if ((col.gameObject.GetComponent<Grab_Item> () == true)  || col.gameObject.tag == "HookPull") {
+		if (col.gameObject.GetComponent<Grab_Item> ()) {
 			Overlaps.Remove(col.gameObject);
 			col.gameObject.GetComponent<VRTK_InteractableObject> ().ToggleHighlight (false);
 			if (Overlaps.Count == 0 && !grabbing && !Held) {
+				HookRend.material.SetColor ("_Color", Color.white);
 				grabbable = null;
 			}
 		}
@@ -210,7 +217,7 @@ public class Force : MonoBehaviour {
 			Overlaps[i].GetComponent<VRTK_InteractableObject> ().touchHighlightColor = PointingColour; // Highlights Overlap
 			Overlaps[i].GetComponent<VRTK_InteractableObject> ().ToggleHighlight (true); // Highlights Overlap
 		}
-
+	
 		// Reset to start
 		if (ObjectSelect + (Overlaps.Count - 1) > Overlaps.Count - 1) {
 			ObjectSelect = - Overlaps.Count + 1;

@@ -46,17 +46,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\HookPull.cs" />
      <Compile Include="Assets\My_Scripts\Chase.cs" />
      <Compile Include="Assets\My_Scripts\EnemySpawner.cs" />
      <Compile Include="Assets\My_Scripts\Force.cs" />
      <Compile Include="Assets\My_Scripts\Grab_Item.cs" />
      <Compile Include="Assets\My_Scripts\HookOverlaps.cs" />
+     <Compile Include="Assets\My_Scripts\HookPull.cs" />
      <Compile Include="Assets\My_Scripts\PlatformDestroyer.cs" />
      <Compile Include="Assets\My_Scripts\PlatformGenerator.cs" />
      <Compile Include="Assets\My_Scripts\Projectile.cs" />
      <Compile Include="Assets\My_Scripts\StickingEnemy_Manager.cs" />
      <Compile Include="Assets\My_Scripts\Turret.cs" />
+     <Compile Include="Assets\My_Scripts\test.cs" />
      <Compile Include="Assets\SteamVR\Extras\SteamVR_GazeTracker.cs" />
      <Compile Include="Assets\SteamVR\Extras\SteamVR_LaserPointer.cs" />
      <Compile Include="Assets\SteamVR\Extras\SteamVR_Teleporter.cs" />
@@ -406,7 +407,6 @@
      <Compile Include="Assets\VoxelAssets\Standard Assets\Effects\ImageEffects\Scripts\Twirl.cs" />
      <Compile Include="Assets\VoxelAssets\Standard Assets\Effects\ImageEffects\Scripts\VignetteAndChromaticAberration.cs" />
      <Compile Include="Assets\VoxelAssets\Standard Assets\Effects\ImageEffects\Scripts\Vortex.cs" />
-     <Compile Include="Assets\test.cs" />
      <None Include="Assets\VRTK\Version.txt" />
      <None Include="Assets\VoxelAssets\Standard Assets\Effects\GlassRefraction\Shaders\GlassStainedBumpDistort.shader" />
      <None Include="Assets\VoxelAssets\Standard Assets\Effects\ImageEffects\Shaders\_BloomAndFlares\BlendOneOne.shader" />
