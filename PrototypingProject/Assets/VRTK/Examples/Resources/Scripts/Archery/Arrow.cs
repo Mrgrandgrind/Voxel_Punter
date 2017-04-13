@@ -68,6 +68,7 @@
                 ResetArrow();
             }
         }
+			
 
         private void RecreateNotch()
         {

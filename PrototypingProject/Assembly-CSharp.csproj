@@ -46,14 +46,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\My_Scripts\ArrowTarget.cs" />
      <Compile Include="Assets\My_Scripts\Chase.cs" />
      <Compile Include="Assets\My_Scripts\EnemySpawner.cs" />
      <Compile Include="Assets\My_Scripts\Force.cs" />
      <Compile Include="Assets\My_Scripts\Grab_Item.cs" />
+     <Compile Include="Assets\My_Scripts\HealthHud.cs" />
      <Compile Include="Assets\My_Scripts\HookOverlaps.cs" />
      <Compile Include="Assets\My_Scripts\HookPull.cs" />
+     <Compile Include="Assets\My_Scripts\OpenBars.cs" />
      <Compile Include="Assets\My_Scripts\PlatformDestroyer.cs" />
      <Compile Include="Assets\My_Scripts\PlatformGenerator.cs" />
+     <Compile Include="Assets\My_Scripts\PlayerDamageDetection.cs" />
      <Compile Include="Assets\My_Scripts\Projectile.cs" />
      <Compile Include="Assets\My_Scripts\StickingEnemy_Manager.cs" />
      <Compile Include="Assets\My_Scripts\Turret.cs" />

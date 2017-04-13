@@ -26,7 +26,6 @@ public class Force : MonoBehaviour {
 	private Renderer HookRend;
 	private HookPull Hook_Pull;
 
-	private bool PullingPlayer;
 	private bool countdown;
 	private bool retracting;
 	private bool arrived;
@@ -98,14 +97,12 @@ public class Force : MonoBehaviour {
 			if (PickupObject == true) {
 				grabbable.Move (true, transform.position);
 			} else {
-				PullingPlayer = true;
 				StartCoroutine (PullPlayer ());
 				if (retracting) {
 					//BodyPhysics.enableBodyCollisions = true;
 					HookTarget = this.gameObject;
 				}
 				if (arrived) {
-					PullingPlayer = false;
 					HookRend.material.SetColor ("_Color", Color.white);
 					Hook.transform.parent = this.gameObject.transform;
 					Hook.transform.localPosition = new Vector3 (0, 0, 0);
@@ -148,6 +145,7 @@ public class Force : MonoBehaviour {
 
 
 	public void Ungrabbed(){
+		
 		if (!first) {
 			first = true;
 			return;

@@ -4,20 +4,19 @@ using UnityEngine;
 
 public class Turret: MonoBehaviour {
 
-	//public GameObject eye;
-
+	public ParticleSystem SpawnCloud;
+	public ParticleSystem DamageSpark;
 	public float Bullet_Forward_Force;
-	public float ShootDelay;
 
+	private bool InRange;
+	private bool Spawned;
+	private int health = 4;
+	private float ShootDelay;
+	private GameObject Bullet;
 	private GameObject Bullet_Emitter;
 	private Renderer eye_rend;
 	private Renderer body_rend;
-
-	private GameObject Bullet;
 	private Transform player;
-	private int health = 3;
-	private bool InRange;
-	private bool Spawned;
 
 
 	// Use this for initialization
@@ -25,20 +24,20 @@ public class Turret: MonoBehaviour {
 		body_rend = GetComponent<Renderer> ();
 		eye_rend = this.gameObject.transform.GetChild(0).gameObject.GetComponent<Renderer> ();
 		Bullet_Emitter = this.gameObject.transform.GetChild(1).gameObject;
+		Instantiate (SpawnCloud, Bullet_Emitter.transform.position, this.transform.rotation);
 		player = GameObject.Find ("Camera (eye)").transform;
 		Bullet = Resources.Load ("projectile") as GameObject;
 		Invoke ("SpawnDelay", 2);
+		ShootDelay = Random.Range (1.0f, 3.0f);
 		InvokeRepeating ("Shoot", 0.0f, ShootDelay);
 	}
 
 	void SpawnDelay(){
 		Spawned = true;
-		Destroy (this.gameObject.transform.GetChild (2));
 	}
 
 	// Update is called once per frame
 	void Update () {
-
 		if (Spawned) {
 			if (Vector3.Distance (player.position, this.transform.position) < 8) {
 				body_rend.material.SetColor ("_Color", Color.red);
@@ -73,23 +72,31 @@ public class Turret: MonoBehaviour {
 
 	IEnumerator OnCollisionEnter(Collision col){
 		if (col.gameObject.tag == "Arrow" || col.gameObject.tag == "projectile"){
+			Instantiate (DamageSpark, Bullet_Emitter.transform.position, this.transform.rotation);
+			Destroy (col.gameObject);
 			health--;
 			if (health <= 0){
 				yield return new WaitForSeconds(0.6f);
-				Destroy (gameObject);
+				GameObject Spawner = GameObject.Find("SwordTrigger");
+				Spawner.GetComponent<EnemySpawner> ().EnemyDied ();
+				DestroyImmediate (gameObject,true);
 			}
 		}
 	}
+
 
 	IEnumerator OnTriggerEnter(Collider col){
 		if (col.gameObject.tag == "Arrow" || col.gameObject.tag == "projectile"){
+			Instantiate (DamageSpark, Bullet_Emitter.transform.position, this.transform.rotation);
+			Destroy (col.gameObject);
 			health--;
 			if (health <= 0){
 				yield return new WaitForSeconds(0.6f);
-				Destroy (gameObject);
+				GameObject Spawner = GameObject.Find("SwordTrigger");
+				Spawner.GetComponent<EnemySpawner>().EnemyDied ();
+				DestroyImmediate (gameObject,true);
 			}
 		}
 	}
-
 }
 
