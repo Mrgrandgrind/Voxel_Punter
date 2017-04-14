@@ -168,7 +168,19 @@ public class Force : MonoBehaviour {
 		Locked = false;
 		grabbable.Grab(false);
 		Held = true;
-		vrtkController.GetComponent<VRTK_InteractGrab>().AttemptGrab();
+		if (grabbable.tag == "Health") {
+			GameObject.Find ("PlayerHealth").GetComponent<PlayerDamageDetection> ().AddHealth();
+			grabbable.gameObject.GetComponent<Health_Pickup> ().SpawnParticle ();
+			Overlaps.Remove (grabbable.gameObject);
+			if (Overlaps.Count == 0 && !grabbing && !Held) {
+				HookRend.material.SetColor ("_Color", Color.white);
+				grabbable = null;
+			}
+			Ungrabbed ();
+			Destroy (grabbable.gameObject);
+		} else {
+			vrtkController.GetComponent<VRTK_InteractGrab> ().AttemptGrab ();
+		}
 	}
 
 	void DisplayLine(bool display, Vector3 endpoint){

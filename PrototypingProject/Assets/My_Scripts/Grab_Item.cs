@@ -9,10 +9,7 @@ public class Grab_Item : MonoBehaviour {
 	private Rigidbody rBody;
 	private float moveScale;
 
-
-
-	// Use this for initialization
-	void Start () {
+	void Start(){
 		rBody = GetComponent<Rigidbody>();
 	}
 

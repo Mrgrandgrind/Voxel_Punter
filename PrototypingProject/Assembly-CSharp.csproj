@@ -46,9 +46,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Health_Pickup.cs" />
      <Compile Include="Assets\My_Scripts\ArrowTarget.cs" />
      <Compile Include="Assets\My_Scripts\Chase.cs" />
      <Compile Include="Assets\My_Scripts\EnemySpawner.cs" />
+     <Compile Include="Assets\My_Scripts\EnemySpawner_1.cs" />
+     <Compile Include="Assets\My_Scripts\EnemySpawner_2.cs" />
      <Compile Include="Assets\My_Scripts\Force.cs" />
      <Compile Include="Assets\My_Scripts\Grab_Item.cs" />
      <Compile Include="Assets\My_Scripts\HealthHud.cs" />

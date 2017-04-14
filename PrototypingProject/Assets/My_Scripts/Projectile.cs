@@ -25,10 +25,6 @@ public class Projectile : MonoBehaviour {
 			SwordForce = col.gameObject.GetComponent<Sword> ().OverlapForce;
 			gameObject.GetComponent<Rigidbody> ().AddForce (-force * (SwordForce/100));
 		}
-
-		if (col.gameObject.tag == "Enemy") {
-			Destroy (gameObject);
-		}
 	}
 
 

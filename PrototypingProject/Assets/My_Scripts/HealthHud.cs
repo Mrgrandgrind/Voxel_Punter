@@ -24,11 +24,18 @@ public class HealthHud : MonoBehaviour {
 	}
 		
 	public void DisplayHud(bool state){
-		if (Damaged) 
+		if (Damaged)
 			state = true;
-		
-		for (int i = 0; i < HealthRemaining; i++) {
-			HUD [i].SetActive (state);
+
+		if (state == true) {
+			for (int i = 0; i < HealthRemaining; i++) {
+				HUD [i].SetActive (state);
+			}
+		} else {
+
+			for (int i = 0; i < 3; i++) {
+				HUD [i].SetActive (state);
+			}
 		}
 	}
 

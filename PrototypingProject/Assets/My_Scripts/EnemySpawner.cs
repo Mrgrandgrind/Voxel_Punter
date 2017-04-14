@@ -8,7 +8,7 @@ public class EnemySpawner : MonoBehaviour {
 	public Transform[] EnemySpawnPoints;
 	public GameObject prefab;
 	public enum EventType {TriggerEnter,TriggerExit};
-
+	public bool TriggerEvent;
 	public GameObject ClosedChest;
 	public GameObject OpenChest;
 
@@ -34,8 +34,10 @@ public class EnemySpawner : MonoBehaviour {
 	}
 
 	void SpawnEnemies(){
+		GameObject[] EnemySpawn = new GameObject[EnemySpawnPoints.Length];
 		for (int i = 0; i < EnemySpawnPoints.Length; i++) {
-			Instantiate (prefab, EnemySpawnPoints [i].position, EnemySpawnPoints [i].rotation);
+			EnemySpawn[i] = Instantiate (prefab, EnemySpawnPoints [i].position, EnemySpawnPoints [i].rotation);
+			EnemySpawn[i].GetComponent<Turret> ().TriggerSpawnerEvent = TriggerEvent;
 		}
 		DoneOnce = true;
 		//Destroy (gameObject, 0.1f); //immediately destros itself afterwards

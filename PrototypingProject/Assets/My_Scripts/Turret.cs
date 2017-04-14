@@ -7,6 +7,8 @@ public class Turret: MonoBehaviour {
 	public ParticleSystem SpawnCloud;
 	public ParticleSystem DamageSpark;
 	public float Bullet_Forward_Force;
+	public bool TriggerSpawnerEvent;
+	public GameObject HealthDrop;
 
 	private bool InRange;
 	private bool Spawned;
@@ -68,35 +70,25 @@ public class Turret: MonoBehaviour {
 		Destroy (Temporary_Bullet_Handler, 10.0f);
 		eye_rend.material.SetColor ("_Color", Color.green);
 	}
-
-
-	IEnumerator OnCollisionEnter(Collision col){
+		
+	void OnTriggerEnter(Collider col){
 		if (col.gameObject.tag == "Arrow" || col.gameObject.tag == "projectile"){
-			Instantiate (DamageSpark, Bullet_Emitter.transform.position, this.transform.rotation);
 			Destroy (col.gameObject);
+			Instantiate (DamageSpark, Bullet_Emitter.transform.position, this.transform.rotation);
 			health--;
 			if (health <= 0){
-				yield return new WaitForSeconds(0.6f);
-				GameObject Spawner = GameObject.Find("SwordTrigger");
-				Spawner.GetComponent<EnemySpawner> ().EnemyDied ();
-				DestroyImmediate (gameObject,true);
+				Invoke ("Died", 0.6f);
 			}
 		}
 	}
 
-
-	IEnumerator OnTriggerEnter(Collider col){
-		if (col.gameObject.tag == "Arrow" || col.gameObject.tag == "projectile"){
-			Instantiate (DamageSpark, Bullet_Emitter.transform.position, this.transform.rotation);
-			Destroy (col.gameObject);
-			health--;
-			if (health <= 0){
-				yield return new WaitForSeconds(0.6f);
-				GameObject Spawner = GameObject.Find("SwordTrigger");
-				Spawner.GetComponent<EnemySpawner>().EnemyDied ();
-				DestroyImmediate (gameObject,true);
-			}
+	void Died(){
+		if (TriggerSpawnerEvent) {
+			GameObject Spawner = GameObject.Find ("SwordTrigger");
+			Spawner.GetComponent<EnemySpawner_1> ().EnemyDied ();
 		}
+		var Heart = (GameObject)Instantiate (HealthDrop, this.transform.position, new Quaternion (0,0,0,0));
+		Destroy(this.gameObject);
 	}
 }
 
