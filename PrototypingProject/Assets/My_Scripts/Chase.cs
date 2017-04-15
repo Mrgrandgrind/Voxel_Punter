@@ -11,7 +11,12 @@ public class Chase : MonoBehaviour {
 	private float timeDelay = 0.05f;
 	private Renderer rend;
 	private Vector3 HitForce;
+	private bool dead;
+	private bool StartPause;
+	private bool DoOnce;
 
+	public ChaseSpawner Spawner;
+	public ParticleSystem Spark;
 	public bool stuck = false;
 	public bool parented;
 	public int FaceLocation;
@@ -23,17 +28,24 @@ public class Chase : MonoBehaviour {
 		rb = GetComponent<Rigidbody>();
 		player = GameObject.Find ("Camera (eye)");
 		rend = GetComponent<Renderer> ();
+		Invoke ("StartDelay", 1.0f);
 	}
 
+	void StartDelay(){
+		StartPause = true;
+	}
 	// Update is called once per frame
 	void Update () {
+		if (!StartPause)
+			return;
+		
 		direction = player.transform.position - this.transform.position;
-		if ((Vector3.Distance (player.transform.position, this.transform.position) < 8) && (stuck == false)) {
+		if (((Vector3.Distance (player.transform.position, this.transform.position) < 8) && (!stuck)) && (!dead)) {
 			rend.material.SetColor ("_Color", Color.blue);
 			direction = player.transform.position - this.transform.position;
 			this.transform.rotation = Quaternion.Slerp (this.transform.rotation, Quaternion.LookRotation (direction), 0.1f);
 			if (Vector3.Distance (player.transform.position, this.transform.position) > 0.35f) {
-				rb.AddForce(direction * 1); 
+				rb.AddForce(direction * 2); 
 			}
 		}else if (stuck == true) {
 			transform.rotation = Quaternion.Slerp (transform.rotation, Quaternion.LookRotation (direction), timeDelay);
@@ -55,13 +67,13 @@ public class Chase : MonoBehaviour {
 			stuck = false;
 
 			if (col.tag == "Controller")
-				GetComponent<Rigidbody> ().AddRelativeForce (0, 0, -200);
+				GetComponent<Rigidbody> ().AddRelativeForce (0, 0, -550);
 
 			else if (col.tag == "Sword") {
-			float SwordForce;
-			SwordForce = col.gameObject.GetComponent<Sword> ().OverlapForce;
-				gameObject.GetComponent<Rigidbody> ().AddRelativeForce (HitForce * (SwordForce / 100));
-			StartCoroutine (Destroy ());
+			float SwordForce = col.gameObject.GetComponent<Sword> ().OverlapForce;
+			gameObject.GetComponent<Rigidbody> ().AddRelativeForce (HitForce * (SwordForce / 70));
+			dead = true;
+			Invoke ("Destroy", 1);
 			}
 		}
 	}
@@ -72,8 +84,13 @@ public class Chase : MonoBehaviour {
 		parented = true;
 	}
 
-	IEnumerator Destroy(){
-		yield return new WaitForSeconds (1.0f);
+	void Destroy(){
+		dead = true;
+		if (!DoOnce) {
+			Spawner.SpawnedNum--;
+			DoOnce = true;
+		}
+		Instantiate (Spark, this.transform.position, this.transform.rotation);
 		Destroy (gameObject);
 	}
 

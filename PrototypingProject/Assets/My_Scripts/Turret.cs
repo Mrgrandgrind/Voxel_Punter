@@ -6,13 +6,15 @@ public class Turret: MonoBehaviour {
 
 	public ParticleSystem SpawnCloud;
 	public ParticleSystem DamageSpark;
+	public ParticleSystem DeathCloud;
 	public float Bullet_Forward_Force;
 	public bool TriggerSpawnerEvent;
 	public GameObject HealthDrop;
+	public bool EyeHit;
 
 	private bool InRange;
 	private bool Spawned;
-	private int health = 4;
+	private int health = 3;
 	private float ShootDelay;
 	private GameObject Bullet;
 	private GameObject Bullet_Emitter;
@@ -60,6 +62,17 @@ public class Turret: MonoBehaviour {
 		}
 	}
 
+	public void EyeShot(){
+		EyeHit = true;
+		health = 10;
+		Invoke ("Died", 0.0f);
+	}
+
+	void DeathByEye(){
+		Debug.Log ("enumarated");
+
+	}
+
 	public IEnumerator ChangeMat(){
 		eye_rend.material.SetColor ("_Color", Color.red);
 		yield return new WaitForSeconds (ShootDelay/2);
@@ -72,12 +85,12 @@ public class Turret: MonoBehaviour {
 	}
 		
 	void OnTriggerEnter(Collider col){
-		if (col.gameObject.tag == "Arrow" || col.gameObject.tag == "projectile"){
+		if ((col.gameObject.tag == "Arrow" || col.gameObject.tag == "projectile") && !EyeHit){
 			Destroy (col.gameObject);
 			Instantiate (DamageSpark, Bullet_Emitter.transform.position, this.transform.rotation);
 			health--;
 			if (health <= 0){
-				Invoke ("Died", 0.6f);
+				Invoke ("Died", 0.0f);
 			}
 		}
 	}
@@ -87,6 +100,7 @@ public class Turret: MonoBehaviour {
 			GameObject Spawner = GameObject.Find ("SwordTrigger");
 			Spawner.GetComponent<EnemySpawner_1> ().EnemyDied ();
 		}
+		Instantiate (DeathCloud, Bullet_Emitter.transform.position, this.transform.rotation);
 		var Heart = (GameObject)Instantiate (HealthDrop, this.transform.position, new Quaternion (0,0,0,0));
 		Destroy(this.gameObject);
 	}

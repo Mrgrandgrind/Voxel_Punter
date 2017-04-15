@@ -23,7 +23,7 @@ public class Projectile : MonoBehaviour {
 		if (col.gameObject.tag == "Sword") {
 			float SwordForce;
 			SwordForce = col.gameObject.GetComponent<Sword> ().OverlapForce;
-			gameObject.GetComponent<Rigidbody> ().AddForce (-force * (SwordForce/100));
+			gameObject.GetComponent<Rigidbody> ().AddForce (-force * (SwordForce/140));
 		}
 	}
 
