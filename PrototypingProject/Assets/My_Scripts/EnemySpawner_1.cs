@@ -18,6 +18,7 @@ public class EnemySpawner_1 : MonoBehaviour {
 	public ParticleSystem ChestFire;
 	public GameObject SpawnPoint;
 	public GameObject Bow;
+	public AudioSource Music;
 
 	private bool DoneOnce;
 	private bool[] DeadEnemies;
@@ -37,6 +38,7 @@ public class EnemySpawner_1 : MonoBehaviour {
 	{
 		if (other.gameObject.tag == "Sword" && DoneOnce == false && EventSelected == EventType.TriggerExit) {
 			SpawnEnemies ();
+			Music.Play ();
 		}
 	}
 
@@ -65,16 +67,12 @@ public class EnemySpawner_1 : MonoBehaviour {
 		Torch1.Play ();
 		Torch2.Play ();
 		ClosedChest.GetComponent<Rigidbody>().AddForce( new Vector3(0,500.0f,0));
-
 		Invoke ("SpawnChest", 1.2f);
-
-
 	}
 
 	void SpawnChest(){
 		OpenChest.GetComponent<Renderer> ().enabled = true;
 		Destroy (ClosedChest);
-
 		ChestFire.Play ();
 		SpawnCloud.Play ();
 		GameObject Spawn = Instantiate (Bow, SpawnPoint.transform.position,SpawnPoint.transform.rotation);

@@ -35,34 +35,17 @@ public class EnemySpawner : MonoBehaviour {
 
 	void SpawnEnemies(){
 		GameObject[] EnemySpawn = new GameObject[EnemySpawnPoints.Length];
-		for (int i = 0; i < EnemySpawnPoints.Length; i++) {
-			EnemySpawn[i] = Instantiate (prefab, EnemySpawnPoints [i].position, EnemySpawnPoints [i].rotation);
-			EnemySpawn[i].GetComponent<Turret> ().TriggerSpawnerEvent = TriggerEvent;
-		}
+
+		EnemySpawn[0] = Instantiate (prefab, EnemySpawnPoints [0].position, EnemySpawnPoints [0].rotation);
+		EnemySpawn[0].GetComponent<Turret> ().TriggerSpawnerEvent = TriggerEvent;
+
+		EnemySpawn[1] = Instantiate (prefab, EnemySpawnPoints [1].position, EnemySpawnPoints [1].rotation);
+		EnemySpawn[1].GetComponent<Turret> ().TriggerSpawnerEvent = TriggerEvent;
+		
 		DoneOnce = true;
 		//Destroy (gameObject, 0.1f); //immediately destros itself afterwards
 	}
 
 	public void EnemyDied(){
-		/*
-		for (int i = 0; i < DeadEnemies.Length; i++) {
-			if (DeadEnemies [i] == false) {
-				DeadEnemies [i] = true;
-				break;
-			}
-		}
-		*/
-		if (DeadEnemies [0] == false) {
-			DeadEnemies [0] = true;
-		} else {
-			DeadEnemies [1] = true;
-			EndEvent ();
-		}
-	}
-
-	void EndEvent(){
-		Instantiate (OpenChest, ClosedChest.transform.position, ClosedChest.transform.rotation);
-		Destroy (ClosedChest);
-
 	}
 }

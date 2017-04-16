@@ -11,6 +11,7 @@ public class ChaseSpawner : MonoBehaviour {
 	public GameObject Chaser;
 	public float MovementSpeed;
 	public int SpawnedNum;
+	public bool Enabled;
 
 	private Vector3 StartPosition;
 	private Vector3 EndPosition;
@@ -26,20 +27,24 @@ public class ChaseSpawner : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		this.transform.position = Vector3.Lerp (this.transform.position, TargetPosition, Time.deltaTime / MovementSpeed);
+		if (Enabled) {
+			this.transform.position = Vector3.Lerp (this.transform.position, TargetPosition, Time.deltaTime / MovementSpeed);
 
-		if (this.transform.position.x <= (EndPosition.x + 0.5f ))
-			TargetPosition = StartPosition;
-		else if (this.transform.position.x >= (StartPosition.x - 0.5f))
-			TargetPosition = EndPosition;
+			if (this.transform.position.x <= (EndPosition.x + 0.5f))
+				TargetPosition = StartPosition;
+			else if (this.transform.position.x >= (StartPosition.x - 0.5f))
+				TargetPosition = EndPosition;
+		}
 	}
 
 	void SpawnChaser(){
-		if (SpawnedNum == 6)
-			return;
+		if (Enabled) {
+			if (SpawnedNum == 6)
+				return;
 		
-		SpawnedNum++;
-		StartCoroutine ("Spawn");
+			SpawnedNum++;
+			StartCoroutine ("Spawn");
+		}
 	}
 
 	IEnumerator Spawn(){

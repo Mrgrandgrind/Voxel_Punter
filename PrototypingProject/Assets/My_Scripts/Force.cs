@@ -6,8 +6,6 @@ using VRTK.Examples;
 
 public class Force : MonoBehaviour {
 
-	public GameObject TestTeleport;
-
 	public GameObject Hook;
 	public GameObject vrtkController;
 	public bool Held;
@@ -16,7 +14,6 @@ public class Force : MonoBehaviour {
 
 	[SerializeField]
 	public VRTK_BodyPhysics BodyPhysics;
-
 
 	private SteamVR_Controller.Device controller;
 	private LineRenderer lRender;
@@ -62,9 +59,8 @@ public class Force : MonoBehaviour {
 		 /// Controller events ///////////////////////////
 		if (grabbing == true && Held == false) {
 			HookShot ();
-		} else if (controller.GetPressDown (SteamVR_Controller.ButtonMask.Grip) && Held == false) { // Force Grab
-			
 		} else if (controller.GetPressUp (SteamVR_Controller.ButtonMask.Grip) && Held == false) {
+			HookRend.enabled = true;
 			HookRend.material.SetColor ("_Color", Color.green);
 			Hook.transform.parent = null;
 			grabbing = true;
@@ -73,13 +69,13 @@ public class Force : MonoBehaviour {
 	}
 
 	void HookShot(){
-		GameObject HookTarget = grabbableObject;
-
 		// Object is now in players hand
 		if (grabbable.inHand == true) {
 			GrabPulledObject(); // Grabs object with controller
 			return;
 		}
+
+		GameObject HookTarget = grabbableObject;
 
 		if (Hook.GetComponent<HookOverlaps> ().HitGameObject == grabbableObject) {
 			Locked = true;
@@ -103,7 +99,7 @@ public class Force : MonoBehaviour {
 					HookTarget = this.gameObject;
 				}
 				if (arrived) {
-					HookRend.material.SetColor ("_Color", Color.white);
+					HookRend.enabled = false;
 					Hook.transform.parent = this.gameObject.transform;
 					Hook.transform.localPosition = new Vector3 (0, 0, 0);
 					DisplayLine (false, transform.position);
@@ -118,14 +114,6 @@ public class Force : MonoBehaviour {
 		}
 
 		DrawHook (HookTarget);
-
-		/*
-		if (PickupObject) {
-			PullObject ();
-		} else {
-			PullPlayer ();
-		}
-		*/
 	}
 
 	IEnumerator PullPlayer(){
@@ -145,12 +133,7 @@ public class Force : MonoBehaviour {
 
 
 	public void Ungrabbed(){
-		
-		if (!first) {
-			first = true;
-			return;
-		}
-		HookRend.material.SetColor ("_Color", Color.white);
+		HookRend.enabled = false;
 		Held = false;
 		UnGrabPulledObject ();
 	}
@@ -171,15 +154,12 @@ public class Force : MonoBehaviour {
 		if (grabbable.tag == "Health") {
 			GameObject.Find ("PlayerHealth").GetComponent<PlayerDamageDetection> ().AddHealth();
 			grabbable.gameObject.GetComponent<Health_Pickup> ().SpawnParticle ();
-			Overlaps.Remove (grabbable.gameObject);
-			if (Overlaps.Count == 0 && !grabbing && !Held) {
-				HookRend.material.SetColor ("_Color", Color.white);
-				grabbable = null;
-			}
+			Ungrab(grabbable.gameObject);
 			Ungrabbed ();
 			Destroy (grabbable.gameObject);
 		} else {
-			vrtkController.GetComponent<VRTK_InteractGrab> ().AttemptGrab ();
+			HookRend.enabled = false;
+			vrtkController.GetComponent<VRTK_InteractGrab> ().AttemptGrab();
 		}
 	}
 
@@ -205,6 +185,7 @@ public class Force : MonoBehaviour {
 
 	void OnTriggerEnter(Collider col){
 		if ((col.gameObject.GetComponent<Grab_Item> ()) && !grabbing && !Held ) {
+			HookRend.enabled = true;
 			HookRend.material.SetColor ("_Color", Color.red);
 			Overlaps.Add (col.gameObject); // adds overlap to list
 			CurrentSelection();
@@ -213,12 +194,16 @@ public class Force : MonoBehaviour {
 
 	void OnTriggerExit(Collider col){
 		if (col.gameObject.GetComponent<Grab_Item> ()) {
-			Overlaps.Remove(col.gameObject);
-			col.gameObject.GetComponent<VRTK_InteractableObject> ().ToggleHighlight (false);
-			if (Overlaps.Count == 0 && !grabbing && !Held) {
-				HookRend.material.SetColor ("_Color", Color.white);
-				grabbable = null;
-			}
+			Ungrab (col.gameObject);
+		}
+	}
+
+	void Ungrab(GameObject col){
+		Overlaps.Remove(col);
+		col.GetComponent<VRTK_InteractableObject> ().ToggleHighlight (false);
+		if (Overlaps.Count == 0 && !grabbing && !Held) {
+			HookRend.enabled = false;
+			grabbable = null;
 		}
 	}
 

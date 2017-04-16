@@ -38,11 +38,13 @@ public class Chase : MonoBehaviour {
 	void Update () {
 		if (!StartPause)
 			return;
-		
+
+		// Finds player direction
 		direction = player.transform.position - this.transform.position;
+
+		// Dash towards player if not stuck or dead
 		if (((Vector3.Distance (player.transform.position, this.transform.position) < 8) && (!stuck)) && (!dead)) {
 			rend.material.SetColor ("_Color", Color.blue);
-			direction = player.transform.position - this.transform.position;
 			this.transform.rotation = Quaternion.Slerp (this.transform.rotation, Quaternion.LookRotation (direction), 0.1f);
 			if (Vector3.Distance (player.transform.position, this.transform.position) > 0.35f) {
 				rb.AddForce(direction * 2); 
@@ -93,42 +95,4 @@ public class Chase : MonoBehaviour {
 		Instantiate (Spark, this.transform.position, this.transform.rotation);
 		Destroy (gameObject);
 	}
-
-
-	/*
-	IEnumerator OnCollisionEnter(Collision col){
-		
-		if (col.gameObject.tag == "MainCamera") {
-			this.transform.parent =  GameObject.Find ("Camera (eye)").transform;
-			rb.isKinematic = true;
-		}
-
-		if ((col.gameObject.tag == "Sword") || (col.gameObject.tag == "Arrow")) {
-
-			//stuck = true;
-			//this.transform.parent =  GameObject.Find ("Camera (eye)").transform;
-			rb.velocity = Vector3.zero;
-			rb.AddForce (direction * -5, ForceMode.VelocityChange); 
-			health--;
-			if (health <= 0) {
-				death.Play ();
-				yield return new WaitForSeconds (0.55f);
-				Destroy (gameObject);
-			}
-		} 
-	}
-	*/
-
-	/*
-	void OnTriggerEnter(Collider col){
-
-		if (col.gameObject.tag == "MainCamera") {
-			this.transform.parent = GameObject.Find ("Camera (eye)").transform;
-			rb.isKinematic = true;
-			stuck = true;
-		}
-
-	}
-	*/
-
 }

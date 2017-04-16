@@ -21,6 +21,7 @@ public class Turret: MonoBehaviour {
 	private Renderer eye_rend;
 	private Renderer body_rend;
 	private Transform player;
+	private bool DoOnce;
 
 
 	// Use this for initialization
@@ -68,11 +69,6 @@ public class Turret: MonoBehaviour {
 		Invoke ("Died", 0.0f);
 	}
 
-	void DeathByEye(){
-		Debug.Log ("enumarated");
-
-	}
-
 	public IEnumerator ChangeMat(){
 		eye_rend.material.SetColor ("_Color", Color.red);
 		yield return new WaitForSeconds (ShootDelay/2);
@@ -96,13 +92,16 @@ public class Turret: MonoBehaviour {
 	}
 
 	void Died(){
-		if (TriggerSpawnerEvent) {
-			GameObject Spawner = GameObject.Find ("SwordTrigger");
-			Spawner.GetComponent<EnemySpawner_1> ().EnemyDied ();
+		if (!DoOnce) {
+			DoOnce = true;
+			if (TriggerSpawnerEvent) {
+				GameObject Spawner = GameObject.Find ("SwordTrigger");
+				Spawner.GetComponent<EnemySpawner_1> ().EnemyDied ();
+			}
+			Instantiate (DeathCloud, Bullet_Emitter.transform.position, this.transform.rotation);
+			var Heart = (GameObject)Instantiate (HealthDrop, this.transform.position, new Quaternion (0, 0, 0, 0));
+			Destroy (this.gameObject);
 		}
-		Instantiate (DeathCloud, Bullet_Emitter.transform.position, this.transform.rotation);
-		var Heart = (GameObject)Instantiate (HealthDrop, this.transform.position, new Quaternion (0,0,0,0));
-		Destroy(this.gameObject);
 	}
 }
 
